@@ -61,18 +61,6 @@ const App = () => {
     }
   }
 
-  const updateLikes = async (blog) => {
-    try {
-      const returnedBlog = await blogService.updateLikes(blog)
-      let index = blogs.findIndex(blog => blog.title === returnedBlog.title)
-      let newBlogs = [...blogs]
-      newBlogs[index] = {...returnedBlog}
-      setBlogs(newBlogs)
-    } catch (exception) {
-      notification(exception.response.data.error)
-    }
-  }
-
   const removeBlog = async (blog) => {
     try {
       if (window.confirm(`Remove ${blog.title}?`)){
@@ -122,7 +110,7 @@ const App = () => {
       <Togglable showButtonLabel='create new' hideButtonLabel='cancel' ref={blogFormRef}>
         <BlogForm createBlog={addBlog} />
       </Togglable>
-      <BlogList blogs={blogsRedux} updateLikes={updateLikes} removeBlog={removeBlog}/>
+      <BlogList blogs={blogsRedux} removeBlog={removeBlog}/>
     </div>
   )
 
