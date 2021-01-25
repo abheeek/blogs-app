@@ -20,3 +20,12 @@ export const createBlog = (blog) => {
   }
 }
 
+export const likeBlog = (blog) => {
+  return async dispatch => {
+    const updatedBlog = await blogService.updateLikes(blog)
+    dispatch({
+      type: 'LIKE_BLOG',
+      payload: { updatedBlog }
+    })
+  }
+}

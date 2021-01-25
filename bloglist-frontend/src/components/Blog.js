@@ -1,7 +1,9 @@
 import React from 'react'
 import Togglable from './Togglable'
+import { useDispatch } from 'react-redux'
 
 const Blog = ({ blog, updateLikes, removeBlog }) => {
+  const dispatch = useDispatch()
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
