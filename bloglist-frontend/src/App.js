@@ -1,25 +1,28 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import BlogList from './components/BlogList'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
+import { setNotification, clearNotification } from './actions/notifActions'
+import { getAllBlogs, createBlog } from './actions/blogsActions'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [message, setMessage] = useState('')
+  const dispatch = useDispatch()
+  const blogsRedux = useSelector(state => state.blogs)
+  const message = useSelector(state => state.notification)
 
   const blogFormRef = useRef()
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
-  }, [])
+    dispatch(getAllBlogs())  
+  }, [dispatch])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -43,17 +46,16 @@ const App = () => {
   }
 
   const notification = (message) => {
-    setMessage(message)
+    dispatch(setNotification(message))
     setTimeout(() => {
-      setMessage('')
+      dispatch(clearNotification())
     }, 5000)
   }
 
   const addBlog = async (blogObject) => {
     try {
       blogFormRef.current.toggleVisibility()
-      const returnedBlog = await blogService.create(blogObject)
-      setBlogs(blogs.concat(returnedBlog))
+      dispatch(createBlog(blogObject))
     } catch (exception) {
       notification(exception.response.data.error)
     }
@@ -67,7 +69,7 @@ const App = () => {
       newBlogs[index] = {...returnedBlog}
       setBlogs(newBlogs)
     } catch (exception) {
-      setMessage(exception.response.data.error)
+      notification(exception.response.data.error)
     }
   }
 
@@ -78,7 +80,7 @@ const App = () => {
         update()
       }
     } catch(exception) {
-      setMessage(exception.response.data.error)
+      notification(exception.response.data.error)
     }
   }
 
@@ -120,7 +122,7 @@ const App = () => {
       <Togglable showButtonLabel='create new' hideButtonLabel='cancel' ref={blogFormRef}>
         <BlogForm createBlog={addBlog} />
       </Togglable>
-      <BlogList blogs={blogs} updateLikes={updateLikes} removeBlog={removeBlog}/>
+      <BlogList blogs={blogsRedux} updateLikes={updateLikes} removeBlog={removeBlog}/>
     </div>
   )
 

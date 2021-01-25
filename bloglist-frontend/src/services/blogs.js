@@ -8,8 +8,6 @@ const setToken = newToken => {
   config = {
     headers: { Authorization: token }
   }
-  console.log(token)
-  console.log(config)
 }
 
 const getAll = async () => {
