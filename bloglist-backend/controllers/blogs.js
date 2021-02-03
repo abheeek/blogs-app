@@ -77,8 +77,10 @@ blogsRouter.delete('/:id', async (req, res) => {
   if (!blog) {
     return res.status(404).end()
   }
-
+  console.log(blog.user.toString())
+  console.log(decodedToken.id)
   if (blog.user.toString() !== decodedToken.id) {
+    console.log("INSIDE BACKEND ERROR HANDLER")
     return res.status(403).send({ error: 'access denied to blog'})
   }
   await Blog.findByIdAndDelete(req.params.id)

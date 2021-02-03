@@ -1,9 +1,9 @@
 import React from 'react'
 import Togglable from './Togglable'
 import { useDispatch } from 'react-redux'
-import { likeBlog } from '../actions/blogsActions'
+import { likeBlog, deleteBlog } from '../actions/blogsActions'
 
-const Blog = ({ blog, removeBlog }) => {
+const Blog = ({ blog }) => {
   const dispatch = useDispatch()
   const blogStyle = {
     paddingTop: 10,
@@ -12,17 +12,27 @@ const Blog = ({ blog, removeBlog }) => {
     borderWidth: 1,
     marginBottom: 5
   }
+
+  const removeBlog = async blog => {
+    if (window.confirm(`Remove blog ${blog.title}?`)) {
+      dispatch(deleteBlog(blog.id))
+    }
+  }
+
+  const updateLikes = blog => {
+    dispatch(likeBlog(blog))
+  }
   
   return (
     <div style={blogStyle}>
-      {blog.title} {blog.author}
+      {blog.title} {blog.user.name}
       <Togglable showButtonLabel='show' hideButtonLabel='hide'>
-        <div>
-          {blog.url}<br/>
-          likes {blog.likes} <button onClick={() => dispatch(likeBlog(blog))}>like</button><br/>
-          {blog.user.name}
-          <button onClick={() => removeBlog(blog)}>remove</button>
-        </div>
+        <button onClick={() => updateLikes(blog)}>
+          {blog.likes} likes
+        </button>
+        <button onClick={() => removeBlog(blog)}>
+          remove
+        </button>  
       </Togglable>  
     </div>
   )

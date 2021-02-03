@@ -25,8 +25,8 @@ const updateLikes = async blog => {
   return response.data
 }
 
-const remove = async blog => {
-  return await axios.delete(`/api/blogs/${blog.id}`, config)
+const remove = async id => {
+  return await axios.delete(`/api/blogs/${id}`, config)
 }
 
 export default { getAll, create, updateLikes, remove, setToken }

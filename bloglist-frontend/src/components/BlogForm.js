@@ -1,9 +1,15 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
+import { useDispatch } from 'react-redux'
+import Togglable from './Togglable'
+import { createBlog } from '../actions/blogsActions'
 
-const BlogForm = ({ createBlog }) => {
+const BlogForm = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const dispatch = useDispatch()
+
+  const blogFormRef = useRef()
 
   const handleTitleChange = (event) => {
     setTitle(event.target.value)
@@ -15,24 +21,25 @@ const BlogForm = ({ createBlog }) => {
     setUrl(event.target.value)
   }
 
-  const addBlog = (event) => {
+  const handleCreateBlog = (event) => {
     event.preventDefault()
-    createBlog({ title, author, url })
+    blogFormRef.current.toggleVisibility()
+    dispatch(createBlog({ title, author, url }))
     setTitle('')
     setAuthor('')
     setUrl('')
   }
 
   return (
-    <div>
+    <Togglable showButtonLabel='create' hideButtonLabel='hide' ref={blogFormRef}>
       <h2>create new</h2>
-      <form onSubmit={addBlog}>
+      <form onSubmit={handleCreateBlog}>
         title: <input type="text" value={title} onChange={handleTitleChange} /><br/>
         author: <input type="text" value={author} onChange={handleAuthorChange} /><br/>
         url: <input type="text" value={url} onChange={handleUrlChange} />
         <button type="submit">create</button>
       </form>
-    </div>
+    </Togglable>
   )
 }
 
